@@ -22,7 +22,8 @@ func TestSafeLeft(t *testing.T) {
 		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
 			t.Parallel()
 			safe := Safe{CurrentPosition: tc.startPos, minPosition: 0, maxPosition: 10}
-			newPosition := safe.Left(tc.steps)
+			steps := tc.steps % (safe.maxPosition - safe.minPosition + 1) // reduce un-needed rotations
+			newPosition := safe.Left(steps)
 			assert.Equal(t, tc.expectedPosition, newPosition)
 		})
 	}
@@ -43,7 +44,8 @@ func TestSafeRight(t *testing.T) {
 		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
 			t.Parallel()
 			safe := Safe{CurrentPosition: tc.startPos, minPosition: 0, maxPosition: 10}
-			newPosition := safe.Right(tc.steps)
+			steps := tc.steps % (safe.maxPosition - safe.minPosition + 1) // reduce un-needed rotations
+			newPosition := safe.Right(steps)
 			assert.Equal(t, tc.expectedPosition, newPosition)
 		})
 	}

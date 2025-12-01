@@ -1,6 +1,9 @@
 package day_1
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Safe struct {
 	CurrentPosition int
@@ -11,9 +14,8 @@ type Safe struct {
 func (s *Safe) Left(steps int) int {
 	remainingPositions := s.CurrentPosition - s.minPosition
 	if steps > remainingPositions {
-		remainingSteps := steps - remainingPositions - 1
+		steps = steps - remainingPositions - 1
 		s.CurrentPosition = s.maxPosition
-		return s.Left(remainingSteps)
 	}
 	newPosition := s.CurrentPosition - steps
 	s.CurrentPosition = newPosition
@@ -23,9 +25,8 @@ func (s *Safe) Left(steps int) int {
 func (s *Safe) Right(steps int) int {
 	remainingPositions := s.maxPosition - s.CurrentPosition
 	if steps > remainingPositions {
-		remainingSteps := steps - remainingPositions - 1
+		steps = steps - remainingPositions - 1
 		s.CurrentPosition = s.minPosition
-		return s.Right(remainingSteps)
 	}
 	newPosition := s.CurrentPosition + steps
 	s.CurrentPosition = newPosition
@@ -33,7 +34,8 @@ func (s *Safe) Right(steps int) int {
 }
 
 func (s *Safe) Rotate(rotation string) {
-	direction, steps := ParseRotation(rotation)
+	_, remainingRotation := s.ReduceRotations(rotation)
+	direction, steps := ParseRotation(remainingRotation)
 
 	switch direction {
 	case "L":
@@ -58,6 +60,15 @@ func (s *Safe) WouldPassZero(rotation string) bool {
 		result = s.CurrentPosition+steps > s.maxPosition
 	}
 	return result
+}
+
+func (s *Safe) ReduceRotations(rotation string) (int, string) {
+	direction, steps := ParseRotation(rotation)
+
+	wheelSize := s.maxPosition - s.minPosition + 1
+	rotations := steps / wheelSize
+	remainingSteps := steps % wheelSize
+	return rotations, fmt.Sprintf("%s%d", direction, remainingSteps)
 }
 
 func ParseRotation(rotation string) (direction string, steps int) {

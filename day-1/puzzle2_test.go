@@ -28,7 +28,8 @@ func TestCountRotationsPassedZero(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.rotation, func(t *testing.T) {
 			t.Parallel()
-			rotations, remainingSteps := reduceRotations(tc.rotation, tc.maxPosition)
+			safe := Safe{CurrentPosition: 50, minPosition: 0, maxPosition: tc.maxPosition}
+			rotations, remainingSteps := safe.ReduceRotations(tc.rotation)
 			assert.Equal(t, tc.expectedRotations, rotations)
 			assert.Equal(t, tc.expectedRemainingSteps, remainingSteps)
 		})
