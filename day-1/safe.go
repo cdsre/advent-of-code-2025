@@ -33,9 +33,7 @@ func (s *Safe) Right(steps int) int {
 }
 
 func (s *Safe) Rotate(rotation string) {
-	direction := string(rotation[0])
-	stepsStr := rotation[1:]
-	steps, _ := strconv.Atoi(stepsStr)
+	direction, steps := ParseRotation(rotation)
 
 	switch direction {
 	case "L":
@@ -43,4 +41,27 @@ func (s *Safe) Rotate(rotation string) {
 	case "R":
 		s.Right(steps)
 	}
+}
+
+func (s *Safe) WouldPassZero(rotation string) bool {
+	direction, steps := ParseRotation(rotation)
+	var result bool
+
+	if s.CurrentPosition == 0 {
+		return false
+	}
+
+	switch direction {
+	case "L":
+		result = s.CurrentPosition-steps < 0
+	case "R":
+		result = s.CurrentPosition+steps > s.maxPosition
+	}
+	return result
+}
+
+func ParseRotation(rotation string) (direction string, steps int) {
+	direction = string(rotation[0])
+	steps, _ = strconv.Atoi(rotation[1:])
+	return direction, steps
 }

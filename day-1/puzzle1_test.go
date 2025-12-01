@@ -8,7 +8,7 @@ import (
 )
 
 func TestPuzzle1(t *testing.T) {
-	data := helpers.LoadData("puzzle1_test_data.txt")
+	data := helpers.LoadData("puzzle_test_data.txt")
 	result := Puzzle1(data)
 	assert.Equal(t, 3, result)
 }
