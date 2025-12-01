@@ -18,11 +18,11 @@ func TestCountRotationsPassedZero(t *testing.T) {
 		rotation               string
 		maxPosition            int
 		expectedRotations      int
-		expectedRemainingSteps int
+		expectedRemainingSteps string
 	}{
-		{"L10", 9, 1, 0},
-		{"R15", 9, 1, 5},
-		{"R75", 9, 7, 5},
+		{"L10", 9, 1, "L0"},
+		{"R15", 9, 1, "R5"},
+		{"R75", 9, 7, "R5"},
 	}
 
 	for _, tc := range testCases {
