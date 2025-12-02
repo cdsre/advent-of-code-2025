@@ -44,7 +44,29 @@ func TestNewProductValidationsDuplicateSequence(t *testing.T) {
 			assert.Equal(t, tc.valid, product.valid)
 		})
 	}
+}
 
+func TestNewProductMultipleValidations(t *testing.T) {
+	testCases := []struct {
+		id    int
+		valid bool
+	}{
+		{1, true},
+		{3, false},
+		{5, false},
+		{7, true},
+		{9, false},
+		{10, false},
+		{15, false},
+		{22, true},
+	}
+
+	for i, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+			product := NewProduct(tc.id, notDivisableByThree{}, notDivisableByFive{})
+			assert.Equal(t, tc.valid, product.valid)
+		})
+	}
 }
 
 func TestNewProductRange(t *testing.T) {
@@ -102,4 +124,16 @@ func TestParseProductRanges(t *testing.T) {
 			assert.Equal(t, tc.expectedSize, len(ranges))
 		})
 	}
+}
+
+type notDivisableByThree struct{}
+
+func (d notDivisableByThree) validate(p *Product) bool {
+	return p.ID%3 != 0
+}
+
+type notDivisableByFive struct{}
+
+func (d notDivisableByFive) validate(p *Product) bool {
+	return p.ID%5 != 0
 }
