@@ -10,16 +10,20 @@ type Product struct {
 	valid bool
 }
 
-func NewProduct(id string) Product {
-	pID, _ := strconv.Atoi(id)
+type ProductValidator interface {
+	validate(p *Product) bool
+}
 
-	// Id's should not contain duplicate sequences
-	valid := false
-	idMidPoint := len(id) / 2
-	if id[:idMidPoint] != id[idMidPoint:] {
-		valid = true
+func NewProduct(id int, validations ...ProductValidator) Product {
+	product := Product{ID: id, valid: true}
+	for _, validator := range validations {
+		valid := validator.validate(&product)
+		if !valid {
+			product.valid = false
+			break
+		}
 	}
-	return Product{pID, valid}
+	return product
 }
 
 type ProductRange struct {
@@ -28,10 +32,10 @@ type ProductRange struct {
 	Last     int
 }
 
-func NewProductRange(first int, last int) ProductRange {
+func NewProductRange(first int, last int, validations ...ProductValidator) ProductRange {
 	var products []*Product
 	for i := first; i <= last; i++ {
-		product := NewProduct(strconv.Itoa(i))
+		product := NewProduct(i, validations...)
 		products = append(products, &product)
 	}
 	return ProductRange{products, first, last}

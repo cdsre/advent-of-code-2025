@@ -12,3 +12,9 @@ func TestPuzzle1(t *testing.T) {
 	result := Puzzle1(data[0])
 	assert.Equal(t, 1227775554, result)
 }
+
+func TestPuzzle2(t *testing.T) {
+	data := helpers.LoadData("puzzle_test_data.txt")
+	result := Puzzle2(data[0])
+	assert.Equal(t, 4174379265, result)
+}

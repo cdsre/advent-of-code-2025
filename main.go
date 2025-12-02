@@ -17,6 +17,8 @@ func main() {
 		day1Puzzle2()
 	case "day2puzzle1":
 		day2Puzzle1()
+	case "day2puzzle2":
+		day2Puzzle2()
 	}
 }
 
@@ -35,5 +37,11 @@ func day1Puzzle2() {
 func day2Puzzle1() {
 	data := helpers.LoadData("day-2/puzzle_data.txt")
 	result := day_2.Puzzle1(data[0])
+	fmt.Printf("%d\n", result)
+}
+
+func day2Puzzle2() {
+	data := helpers.LoadData("day-2/puzzle_data.txt")
+	result := day_2.Puzzle2(data[0])
 	fmt.Printf("%d\n", result)
 }

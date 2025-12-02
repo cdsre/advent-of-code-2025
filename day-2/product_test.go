@@ -9,13 +9,13 @@ import (
 
 func TestNewProduct(t *testing.T) {
 	testCases := []struct {
-		id    string
+		id    int
 		valid bool
 	}{
-		{"1188511885", false},
-		{"1188511886", true},
-		{"1010", false},
-		{"1011", true},
+		{1188511885, true},
+		{1188511886, true},
+		{1010, true},
+		{1011, true},
 	}
 
 	for i, tc := range testCases {
@@ -25,6 +25,26 @@ func TestNewProduct(t *testing.T) {
 			assert.Equal(t, tc.valid, product.valid)
 		})
 	}
+}
+
+func TestNewProductValidationsDuplicateSequence(t *testing.T) {
+	testCases := []struct {
+		id    int
+		valid bool
+	}{
+		{1188511885, false},
+		{1188511886, true},
+		{1010, false},
+		{1011, true},
+	}
+	for i, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+			t.Parallel()
+			product := NewProduct(tc.id, duplicateSequenceValidator{})
+			assert.Equal(t, tc.valid, product.valid)
+		})
+	}
+
 }
 
 func TestNewProductRange(t *testing.T) {
