@@ -41,9 +41,8 @@ func puzzle(data string, validators ...ProductValidator) int {
 	total := 0
 	productRanges := ParseProductRanges(data)
 	for _, productRange := range productRanges {
-		first, last := productRange[0], productRange[1]
-		productRange := NewProductRange(first, last, validators...)
-		for _, product := range productRange.products {
+		products := NewProductRange(productRange[0], productRange[1], validators...).products
+		for _, product := range products {
 			if !product.valid {
 				total += product.ID
 			}
