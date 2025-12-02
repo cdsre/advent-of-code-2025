@@ -31,15 +31,17 @@ func puzzle(data string, validators ...ProductValidator) int {
 
 type duplicateSequenceValidator struct{}
 
-func (d duplicateSequenceValidator) validate(p *Product) bool {
+func (d duplicateSequenceValidator) validate(p *Product) {
 	idString := strconv.Itoa(p.ID)
 	idMidPoint := len(idString) / 2
-	return idString[:idMidPoint] != idString[idMidPoint:]
+	if idString[:idMidPoint] == idString[idMidPoint:] {
+		p.valid = false
+	}
 }
 
 type repeatedSequenceValidator struct{}
 
-func (r repeatedSequenceValidator) validate(p *Product) bool {
+func (r repeatedSequenceValidator) validate(p *Product) {
 	idString := strconv.Itoa(p.ID)
 	idLen := len(idString)
 	for i := 1; i <= idLen/2; i++ {
@@ -47,9 +49,8 @@ func (r repeatedSequenceValidator) validate(p *Product) bool {
 		seqLen := len(seq)
 		repeats := idLen / seqLen
 		if idString == strings.Repeat(seq, repeats) {
-			return false
+			p.valid = false
+			break
 		}
-
 	}
-	return true
 }

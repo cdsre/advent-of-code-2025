@@ -11,15 +11,14 @@ type Product struct {
 }
 
 type ProductValidator interface {
-	validate(p *Product) bool
+	validate(p *Product)
 }
 
 func NewProduct(id int, validations ...ProductValidator) Product {
 	product := Product{ID: id, valid: true}
 	for _, validator := range validations {
-		valid := validator.validate(&product)
-		if !valid {
-			product.valid = false
+		validator.validate(&product)
+		if !product.valid {
 			break
 		}
 	}

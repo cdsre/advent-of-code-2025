@@ -129,12 +129,16 @@ func TestParseProductRanges(t *testing.T) {
 
 type notDivisableByThree struct{}
 
-func (d notDivisableByThree) validate(p *Product) bool {
-	return p.ID%3 != 0
+func (d notDivisableByThree) validate(p *Product) {
+	if p.ID%3 == 0 {
+		p.valid = false
+	}
 }
 
 type notDivisableByFive struct{}
 
-func (d notDivisableByFive) validate(p *Product) bool {
-	return p.ID%5 != 0
+func (d notDivisableByFive) validate(p *Product) {
+	if p.ID%5 == 0 {
+		p.valid = false
+	}
 }
