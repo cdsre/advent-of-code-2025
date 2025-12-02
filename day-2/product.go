@@ -10,14 +10,12 @@ type Product struct {
 	valid bool
 }
 
-type ProductValidator interface {
-	validate(p *Product)
-}
+type ProductValidator func(p *Product)
 
-func NewProduct(id int, validations ...ProductValidator) Product {
+func NewProduct(id int, validators ...ProductValidator) Product {
 	product := Product{ID: id, valid: true}
-	for _, validator := range validations {
-		validator.validate(&product)
+	for _, validate := range validators {
+		validate(&product)
 		if !product.valid {
 			break
 		}

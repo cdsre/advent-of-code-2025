@@ -6,11 +6,35 @@ import (
 )
 
 func Puzzle1(data string) int {
-	return puzzle(data, duplicateSequenceValidator{})
+	duplicateSequenceValidator := func() ProductValidator {
+		return func(p *Product) {
+			idString := strconv.Itoa(p.ID)
+			idMidPoint := len(idString) / 2
+			if idString[:idMidPoint] == idString[idMidPoint:] {
+				p.valid = false
+			}
+		}
+	}
+	return puzzle(data, duplicateSequenceValidator())
 }
 
 func Puzzle2(data string) int {
-	return puzzle(data, repeatedSequenceValidator{})
+	repeatedSequenceValidator := func() ProductValidator {
+		return func(p *Product) {
+			idString := strconv.Itoa(p.ID)
+			idLen := len(idString)
+			for i := 1; i <= idLen/2; i++ {
+				seq := idString[0:i]
+				seqLen := len(seq)
+				repeats := idLen / seqLen
+				if idString == strings.Repeat(seq, repeats) {
+					p.valid = false
+					break
+				}
+			}
+		}
+	}
+	return puzzle(data, repeatedSequenceValidator())
 }
 
 func puzzle(data string, validators ...ProductValidator) int {
@@ -27,30 +51,4 @@ func puzzle(data string, validators ...ProductValidator) int {
 	}
 
 	return total
-}
-
-type duplicateSequenceValidator struct{}
-
-func (d duplicateSequenceValidator) validate(p *Product) {
-	idString := strconv.Itoa(p.ID)
-	idMidPoint := len(idString) / 2
-	if idString[:idMidPoint] == idString[idMidPoint:] {
-		p.valid = false
-	}
-}
-
-type repeatedSequenceValidator struct{}
-
-func (r repeatedSequenceValidator) validate(p *Product) {
-	idString := strconv.Itoa(p.ID)
-	idLen := len(idString)
-	for i := 1; i <= idLen/2; i++ {
-		seq := idString[0:i]
-		seqLen := len(seq)
-		repeats := idLen / seqLen
-		if idString == strings.Repeat(seq, repeats) {
-			p.valid = false
-			break
-		}
-	}
 }

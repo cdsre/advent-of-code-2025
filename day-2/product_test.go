@@ -27,20 +27,27 @@ func TestNewProduct(t *testing.T) {
 	}
 }
 
-func TestNewProductValidationsDuplicateSequence(t *testing.T) {
+func TestNewProductSingleValidation(t *testing.T) {
 	testCases := []struct {
 		id    int
 		valid bool
 	}{
 		{1188511885, false},
-		{1188511886, true},
-		{1010, false},
+		{1188511886, false},
+		{1010, true},
 		{1011, true},
 	}
 	for _, tc := range testCases {
+		lessThanTenThousand := func() ProductValidator {
+			return func(p *Product) {
+				if p.ID >= 10000 {
+					p.valid = false
+				}
+			}
+		}
 		t.Run(fmt.Sprintf("case_%d", tc.id), func(t *testing.T) {
 			t.Parallel()
-			product := NewProduct(tc.id, duplicateSequenceValidator{})
+			product := NewProduct(tc.id, lessThanTenThousand())
 			assert.Equal(t, tc.valid, product.valid)
 		})
 	}
@@ -62,8 +69,16 @@ func TestNewProductMultipleValidations(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
+		notDivisableByN := func(n int) ProductValidator {
+			return func(p *Product) {
+				if p.ID%n == 0 {
+					p.valid = false
+				}
+			}
+		}
+
 		t.Run(fmt.Sprintf("case_%d", tc.id), func(t *testing.T) {
-			product := NewProduct(tc.id, notDivisableByThree{}, notDivisableByFive{})
+			product := NewProduct(tc.id, notDivisableByN(3), notDivisableByN(5))
 			assert.Equal(t, tc.valid, product.valid)
 		})
 	}
@@ -124,21 +139,5 @@ func TestParseProductRanges(t *testing.T) {
 			ranges := ParseProductRanges(tc.rangesString)
 			assert.Equal(t, tc.expectedSize, len(ranges))
 		})
-	}
-}
-
-type notDivisableByThree struct{}
-
-func (d notDivisableByThree) validate(p *Product) {
-	if p.ID%3 == 0 {
-		p.valid = false
-	}
-}
-
-type notDivisableByFive struct{}
-
-func (d notDivisableByFive) validate(p *Product) {
-	if p.ID%5 == 0 {
-		p.valid = false
 	}
 }
