@@ -18,8 +18,8 @@ func TestNewProduct(t *testing.T) {
 		{1011, true},
 	}
 
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%d", tc.id), func(t *testing.T) {
 			t.Parallel()
 			product := NewProduct(tc.id)
 			assert.Equal(t, tc.valid, product.valid)
@@ -37,8 +37,8 @@ func TestNewProductValidationsDuplicateSequence(t *testing.T) {
 		{1010, false},
 		{1011, true},
 	}
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%d", tc.id), func(t *testing.T) {
 			t.Parallel()
 			product := NewProduct(tc.id, duplicateSequenceValidator{})
 			assert.Equal(t, tc.valid, product.valid)
@@ -61,12 +61,13 @@ func TestNewProductMultipleValidations(t *testing.T) {
 		{22, true},
 	}
 
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%d", tc.id), func(t *testing.T) {
 			product := NewProduct(tc.id, notDivisableByThree{}, notDivisableByFive{})
 			assert.Equal(t, tc.valid, product.valid)
 		})
 	}
+
 }
 
 func TestNewProductRange(t *testing.T) {
@@ -80,8 +81,8 @@ func TestNewProductRange(t *testing.T) {
 		{123, 456, 334},
 	}
 
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("first_%d_last_%d", tc.first, tc.last), func(t *testing.T) {
 			t.Parallel()
 			productRange := NewProductRange(tc.first, tc.last)
 			assert.Equal(t, tc.expectedSize, len(productRange.products))
@@ -99,8 +100,8 @@ func TestParseProductRange(t *testing.T) {
 		{"10-29", 10, 29},
 		{"123-456", 123, 456},
 	}
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%s", tc.rangeString), func(t *testing.T) {
 			t.Parallel()
 			first, last := ParseProductRange(tc.rangeString)
 			assert.Equal(t, tc.first, first)
@@ -117,8 +118,8 @@ func TestParseProductRanges(t *testing.T) {
 		{"1-10,12-29", 2},
 		{"1-10,12-29,30-45", 3},
 	}
-	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("case_%d", i), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("case_%s", tc.rangesString), func(t *testing.T) {
 			t.Parallel()
 			ranges := ParseProductRanges(tc.rangesString)
 			assert.Equal(t, tc.expectedSize, len(ranges))
