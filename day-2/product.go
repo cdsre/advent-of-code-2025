@@ -29,10 +29,10 @@ type ProductRange struct {
 	Last     int
 }
 
-func NewProductRange(first int, last int, validations ...ProductValidator) ProductRange {
+func NewProductRange(first int, last int, validators ...ProductValidator) ProductRange {
 	var products []*Product
 	for i := first; i <= last; i++ {
-		product := NewProduct(i, validations...)
+		product := NewProduct(i, validators...)
 		products = append(products, &product)
 	}
 	return ProductRange{products, first, last}
