@@ -19,24 +19,18 @@ func NewBatteryBank(data string) BatteryBank {
 }
 
 func (b BatteryBank) getMaxBatteries(numBatteries int) []int {
-	maxBatteries := make([]int, numBatteries)
-	for i, battery := range b.batteries {
-		for j, maxBattery := range maxBatteries {
-			remainingBatteries := len(b.batteries[i:])
-			remainingMaxBatteries := len(maxBatteries[j:])
-
-			if remainingBatteries < remainingMaxBatteries {
-				continue
-			}
-
-			if battery > maxBattery {
-				maxBatteries[j] = battery
-				slices.Replace(maxBatteries, j+1, len(maxBatteries), 0)
-				break
-			}
-		}
+	slots := make([]int, numBatteries)
+	batteriesIndex := 0
+	batteriesLen := len(b.batteries)
+	for i := range slots {
+		maxBattRemaining := numBatteries - i
+		eligibleBatteries := b.batteries[batteriesIndex : batteriesLen-maxBattRemaining+1]
+		maxBatt := slices.Max(eligibleBatteries)
+		maxBattIndex := slices.Index(eligibleBatteries, maxBatt)
+		slots[i] = maxBatt
+		batteriesIndex += maxBattIndex + 1
 	}
-	return maxBatteries
+	return slots
 }
 
 func (b BatteryBank) maxJoltage(numBatteries int) int {
