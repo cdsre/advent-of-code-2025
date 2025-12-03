@@ -25,10 +25,8 @@ func (b BatteryBank) getMaxBatteries(numBatteries int) []int {
 	for i := range slots {
 		maxBattRemaining := numBatteries - i
 		eligibleBatteries := b.batteries[batteriesIndex : batteriesLen-maxBattRemaining+1]
-		maxBatt := slices.Max(eligibleBatteries)
-		maxBattIndex := slices.Index(eligibleBatteries, maxBatt)
-		slots[i] = maxBatt
-		batteriesIndex += maxBattIndex + 1
+		slots[i] = slices.Max(eligibleBatteries)
+		batteriesIndex += slices.Index(eligibleBatteries, slots[i]) + 1
 	}
 	return slots
 }
