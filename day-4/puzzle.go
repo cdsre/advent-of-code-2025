@@ -5,39 +5,20 @@ func Puzzle1(data []string) int {
 }
 
 func Puzzle2(data []string) int {
-	totalRollsRemoved := 0
-	rollsRemoved := 1
-	for rollsRemoved > 0 {
-		rollsRemoved = Puzzle(data, 4, true)
-		totalRollsRemoved += rollsRemoved
-	}
-	return totalRollsRemoved
+	return Puzzle(data, 4, true)
 }
 
 func Puzzle(data []string, numNeighbours int, mutate ...bool) int {
-	paperRollsRemoved := 0
+	totalRollsRemoved := 0
 	pg := NewPaperGrid(data)
-	for i := range pg {
-		for j := range pg[i] {
-			if pg[i][j] != "@" {
-				continue
-			}
+	rollsRemoved := RemoveRolls(&pg, numNeighbours, mutate...)
+	totalRollsRemoved += rollsRemoved
 
-			neighbours := GetGridNeighbours(pg, i, j)
-			neighbourRolls := 0
-			for _, neighbour := range neighbours {
-				if neighbour == "@" {
-					neighbourRolls++
-				}
-			}
-
-			if neighbourRolls < numNeighbours {
-				paperRollsRemoved++
-				if len(mutate) > 0 && mutate[0] {
-					pg[i][j] = "."
-				}
-			}
+	if len(mutate) > 0 && mutate[0] {
+		for rollsRemoved != 0 {
+			rollsRemoved = RemoveRolls(&pg, numNeighbours, mutate...)
+			totalRollsRemoved += rollsRemoved
 		}
 	}
-	return paperRollsRemoved
+	return totalRollsRemoved
 }

@@ -31,3 +31,34 @@ func GetGridNeighbours(grid [][]string, x int, y int) []string {
 
 	return neighbours
 }
+
+func RemoveRolls(grid *[][]string, numNeighbours int, mutate ...bool) int {
+	pg := *grid
+	var rollsToRemove [][]int
+	for i := range pg {
+		for j := range pg[i] {
+			if pg[i][j] != "@" {
+				continue
+			}
+
+			neighbours := GetGridNeighbours(pg, i, j)
+			neighbourRolls := 0
+			for _, neighbour := range neighbours {
+				if neighbour == "@" {
+					neighbourRolls++
+				}
+			}
+
+			if neighbourRolls < numNeighbours {
+				rollsToRemove = append(rollsToRemove, []int{i, j})
+			}
+		}
+	}
+
+	if len(mutate) > 0 && mutate[0] {
+		for _, roll := range rollsToRemove {
+			pg[roll[0]][roll[1]] = "."
+		}
+	}
+	return len(rollsToRemove)
+}
