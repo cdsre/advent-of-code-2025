@@ -32,7 +32,7 @@ func GetGridNeighbours(grid [][]string, x int, y int) []string {
 	return neighbours
 }
 
-func RemoveRolls(grid *[][]string, numNeighbours int, mutate ...bool) int {
+func RemoveRolls(grid *[][]string, numNeighbours int) int {
 	pg := *grid
 	var rollsToRemove [][]int
 	for i := range pg {
@@ -55,7 +55,7 @@ func RemoveRolls(grid *[][]string, numNeighbours int, mutate ...bool) int {
 		}
 	}
 
-	if len(mutate) > 0 && mutate[0] {
+	if getFeatFlag("mutate", false) {
 		for _, roll := range rollsToRemove {
 			pg[roll[0]][roll[1]] = "."
 		}
