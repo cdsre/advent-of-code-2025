@@ -7,6 +7,7 @@ import (
 	"github.com/cdsre/advent-of-code-2025/day-1"
 	"github.com/cdsre/advent-of-code-2025/day-2"
 	day_3 "github.com/cdsre/advent-of-code-2025/day-3"
+	day_4 "github.com/cdsre/advent-of-code-2025/day-4"
 	"github.com/cdsre/advent-of-code-2025/helpers"
 )
 
@@ -24,6 +25,10 @@ func main() {
 		day3Puzzle1()
 	case "day3puzzle2":
 		day3Puzzle2()
+	case "day4puzzle1":
+		day4Puzzle1()
+	case "day4puzzle2":
+		day4Puzzle2()
 	}
 }
 
@@ -60,5 +65,17 @@ func day3Puzzle1() {
 func day3Puzzle2() {
 	data := helpers.LoadData("day-3/puzzle_data.txt")
 	result := day_3.Puzzle2(data)
+	fmt.Printf("%d\n", result)
+}
+
+func day4Puzzle1() {
+	data := helpers.LoadData("day-4/puzzle_data.txt")
+	result := day_4.Puzzle1(data)
+	fmt.Printf("%d\n", result)
+}
+
+func day4Puzzle2() {
+	data := helpers.LoadData("day-4/puzzle_data.txt")
+	result := day_4.Puzzle2(data)
 	fmt.Printf("%d\n", result)
 }
