@@ -47,79 +47,69 @@ func reverseString(data string) string {
 }
 
 func processCephFormatData(data []string) int {
+	// we will create a grid of all the chars to iterate. We will also create a colNums and colTotals list to track
 	charGrid := make([][]string, len(data)-1)
-	nums := []string{}
-	totalNums := []int{}
+	colNums := []int{}
+	colTotals := []int{}
 
-	operators := strings.Fields(reverseString(data[len(data)-1]))
+	// since we read from right to left we will reverse the operator string and then split it into fields
+	reversedOps := reverseString(data[len(data)-1])
+	operators := strings.Fields(reversedOps)
 	operatorIndex := 0
 
-	// Dont iterate over the operators in the last line
+	// Dont iterate over the operators in the last line just the number data
 	for i, line := range data[:len(data)-1] {
 		charGrid[i] = strings.Split(line, "")
 	}
 
+	//iterate throught he grid from top to bottom and right to left building columns strings
 	for j := len(charGrid[0]) - 1; j >= 0; j-- {
 		strb := strings.Builder{}
 		for i := range charGrid {
 			strb.WriteString(charGrid[i][j])
 		}
+		colString := strb.String()
 
-		numString := strb.String()
-		if strings.Count(numString, " ") == len(numString) {
-			total := 0
-			switch operators[operatorIndex] {
-			case "+":
-				for _, num := range nums {
-					numS := strings.Replace(num, " ", "", -1)
-					numI, _ := strconv.Atoi(numS)
-					total += numI
-				}
-			case "*":
-				// we cant multiply starting with 0 so initialise total as 1.
-				total = 1
-				for _, num := range nums {
-					numS := strings.Replace(num, " ", "", -1)
-					numI, _ := strconv.Atoi(numS)
-					total *= numI
-				}
-			}
-
-			totalNums = append(totalNums, total)
-			nums = []string{}
+		// If the colString is all spaces then its a column seperator and we should total the column numbers
+		if strings.Count(colString, " ") == len(colString) {
+			colTotals = append(colTotals, totalColumn(operators[operatorIndex], colNums))
+			colNums = []int{}
 			operatorIndex++
 			continue
 		}
 
-		nums = append(nums, numString)
+		// If we got here then we have actual numbers, we need to strip out spaces, convert it to an int and add to our column list
+		numS := strings.Replace(colString, " ", "", -1)
+		numI, _ := strconv.Atoi(numS)
+		colNums = append(colNums, numI)
 
 	}
 
-	total := 0
-	switch operators[operatorIndex] {
-	case "+":
-		for _, num := range nums {
-			numS := strings.Replace(num, " ", "", -1)
-			numI, _ := strconv.Atoi(numS)
-			total += numI
-		}
-	case "*":
-		// we cant multiply starting with 0 so initialise total as 1.
-		total = 1
-		for _, num := range nums {
-			numS := strings.Replace(num, " ", "", -1)
-			numI, _ := strconv.Atoi(numS)
-			total *= numI
-		}
-	}
+	// This is a classic end of loop need to process the last number
+	colTotals = append(colTotals, totalColumn(operators[operatorIndex], colNums))
 
-	totalNums = append(totalNums, total)
-	nums = []string{}
-	operatorIndex++
-
+	// Sum all the column totals that are tracked in colTotals array
 	finalTotal := 0
-	for _, num := range totalNums {
+	for _, num := range colTotals {
 		finalTotal += num
 	}
 	return finalTotal
+}
+
+func totalColumn(operator string, nums []int) int {
+	total := 0
+	switch operator {
+	case "+":
+		for _, num := range nums {
+			total += num
+		}
+	case "*":
+		// we cant multiply starting with 0 or the result will always be 0 so initialise total as 1.
+		total = 1
+		for _, num := range nums {
+			total *= num
+		}
+	}
+
+	return total
 }
