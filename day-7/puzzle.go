@@ -7,9 +7,7 @@ func Puzzle1(data []string) int {
 
 func Puzzle2(data []string) int {
 	manifold := puzzle(data)
-	manifold.Display()
-	path := make([]string, 0)
-	return manifold.QuantumTimeLineCount(0, 0, path)
+	return manifold.QuantumTimeLineCount(0, 0)
 }
 
 func puzzle(data []string) *Manifold {

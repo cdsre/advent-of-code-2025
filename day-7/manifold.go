@@ -10,12 +10,14 @@ type Manifold struct {
 	beamStatus     map[int]bool
 	splitCounter   int
 	manifoldMatrix [][]string
+	nodeTimelines  map[string]int
 }
 
 func NewManifold(data []string) *Manifold {
 	gridWidth := len(strings.Split(data[0], ""))
 	beamStatus := make(map[int]bool, gridWidth)
 	manifoldMatrix := make([][]string, len(data))
+	nodeTimelines := make(map[string]int)
 
 	for i, row := range data {
 		manifoldMatrix[i] = strings.Split(row, "")
@@ -24,7 +26,7 @@ func NewManifold(data []string) *Manifold {
 	for i := range manifoldMatrix[0] {
 		beamStatus[i] = false
 	}
-	return &Manifold{beamStatus, 0, manifoldMatrix}
+	return &Manifold{beamStatus, 0, manifoldMatrix, nodeTimelines}
 }
 
 func (m *Manifold) ActivateBeam() {
@@ -73,29 +75,31 @@ func (m *Manifold) Display() {
 	println(strb.String())
 }
 
-func (m *Manifold) QuantumTimeLineCount(i, j int, path []string) int {
+func (m *Manifold) QuantumTimeLineCount(i, j int) int {
+	node := fmt.Sprintf("%d,%d", i, j)
+	if _, ok := m.nodeTimelines[node]; ok {
+		return m.nodeTimelines[node]
+	}
+
 	if i >= len(m.manifoldMatrix) {
-		fmt.Printf("%v\n", strings.Join(path, "#"))
-		path = path[:len(path)-1]
-		return 1
+		m.nodeTimelines[node] = 1
+		return m.nodeTimelines[node]
 	}
 
 	if j >= len(m.manifoldMatrix[i]) {
-		return 0
+		m.nodeTimelines[node] = 0
+		return m.nodeTimelines[node]
 	}
 
 	switch m.manifoldMatrix[i][j] {
 	case "S", "|":
-
-		path = append(path, fmt.Sprintf("%d,%d", i, j))
-		return m.QuantumTimeLineCount(i+1, j, path)
+		m.nodeTimelines[node] = m.QuantumTimeLineCount(i+1, j)
 	case "^":
-
-		path = append(path, fmt.Sprintf("%d,%d", i, j))
-		left := m.QuantumTimeLineCount(i+1, j-1, path)
-		right := m.QuantumTimeLineCount(i+1, j+1, path)
-		return left + right
+		left := m.QuantumTimeLineCount(i+1, j-1)
+		right := m.QuantumTimeLineCount(i+1, j+1)
+		m.nodeTimelines[node] = left + right
 	default:
-		return m.QuantumTimeLineCount(i, j+1, path)
+		m.nodeTimelines[node] = m.QuantumTimeLineCount(i, j+1)
 	}
+	return m.nodeTimelines[node]
 }
