@@ -26,7 +26,7 @@ func Puzzle2(data []string, circuitSize int) int {
 	for _, junctGap := range junctGaps {
 		junctCircuits = connectJunctions(junctGap, junctCircuits)
 		if getTotalJunctions(junctCircuits) == circuitSize {
-			return junctGap.p1.x * junctGap.p2.x
+			return junctGap.j1.x * junctGap.j2.x
 		}
 	}
 

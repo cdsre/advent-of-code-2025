@@ -14,8 +14,7 @@ type Junction struct {
 
 type JunctGap struct {
 	distance float64
-	p1       Junction
-	p2       Junction
+	j1, j2   Junction
 }
 
 type JunctCircuit struct {
@@ -79,7 +78,7 @@ func parseJunctions(data []string) []Junction {
 
 func connectJunctions(junctGap JunctGap, junctCircuits []*JunctCircuit) []*JunctCircuit {
 	var j1Circuit, j2Circuit *JunctCircuit
-	j1, j2 := junctGap.p1, junctGap.p2
+	j1, j2 := junctGap.j1, junctGap.j2
 
 	for _, jc := range junctCircuits {
 		if jc.Contains(j1) {
