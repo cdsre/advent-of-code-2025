@@ -10,6 +10,7 @@ import (
 	day_5 "github.com/cdsre/advent-of-code-2025/day-5"
 	day_6 "github.com/cdsre/advent-of-code-2025/day-6"
 	day_7 "github.com/cdsre/advent-of-code-2025/day-7"
+	day_8 "github.com/cdsre/advent-of-code-2025/day-8"
 	"github.com/cdsre/advent-of-code-2025/helpers"
 )
 
@@ -89,4 +90,18 @@ func BenchmarkD7P1(b *testing.B) {
 func BenchmarkD7P2(b *testing.B) {
 	data := helpers.LoadData("day-7/puzzle_data.txt")
 	benchWrapper(b, "D7P2", day_7.Puzzle2, data)
+}
+
+func BenchmarkD8P1(b *testing.B) {
+	data := helpers.LoadData("day-8/puzzle_data.txt")
+	b.Run("D8P1", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			day_8.Puzzle1(data, 1000)
+		}
+	})
+}
+
+func BenchmarkD8P2(b *testing.B) {
+	data := helpers.LoadData("day-8/puzzle_data.txt")
+	benchWrapper(b, "D8P2", day_8.Puzzle2, data)
 }
