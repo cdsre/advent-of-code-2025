@@ -5,47 +5,37 @@ import (
 )
 
 func Puzzle1(data []string, pairs int) int {
-	junctGaps := puzzle(data)
-	junctCircuits := make([]*JunctCircuit, 0, len(junctGaps)/2)
+	junctGaps, junctCircuits := puzzle(data)
 
 	for i := 0; i < pairs; i++ {
 		junctCircuits = connectJunctions(junctGaps[i], junctCircuits)
 	}
 
-	sort.Slice(junctCircuits, func(i, j int) bool { return len(junctCircuits[i].junctions) > len(junctCircuits[j].junctions) })
-
 	total := 1
+	sort.Slice(junctCircuits, func(i, j int) bool { return len(junctCircuits[i].junctions) > len(junctCircuits[j].junctions) })
 	for _, jc := range junctCircuits[:3] {
 		total *= len(jc.junctions)
 	}
+
 	return total
 }
 
-func Puzzle2(data []string) int {
-	var junc1, junc2 Junction
-	circuitSize := len(data)
-	junctGaps := puzzle(data)
-	junctCircuits := make([]*JunctCircuit, 0, len(junctGaps)/2)
+func Puzzle2(data []string, circuitSize int) int {
+	junctGaps, junctCircuits := puzzle(data)
 
-CirrcuitLoop:
-	for {
-		for _, junctGap := range junctGaps {
-			junctCircuits = connectJunctions(junctGap, junctCircuits)
-
-			if len(junctCircuits) == 1 && getTotalJunctions(junctCircuits) == circuitSize {
-				junc1 = junctGap.p1
-				junc2 = junctGap.p2
-				break CirrcuitLoop
-			}
+	for _, junctGap := range junctGaps {
+		junctCircuits = connectJunctions(junctGap, junctCircuits)
+		if getTotalJunctions(junctCircuits) == circuitSize {
+			return junctGap.p1.x * junctGap.p2.x
 		}
 	}
 
-	return junc1.x * junc2.x
+	return -1
 }
 
-func puzzle(data []string) []JunctGap {
+func puzzle(data []string) ([]JunctGap, []*JunctCircuit) {
 	junctions := parseJunctions(data)
 	junctGaps := getJuctGaps(junctions)
 	sortJunctGaps(junctGaps)
-	return junctGaps
+	return junctGaps, make([]*JunctCircuit, 0, len(junctions)/2)
 }

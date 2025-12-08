@@ -23,6 +23,7 @@ func benchWrapper[T any](b *testing.B, name string, f func(data T) int, data T) 
 }
 
 func BenchmarkD1P1(b *testing.B) {
+	b.Loop()
 	data := helpers.LoadData("day-1/puzzle_data.txt")
 	benchWrapper(b, "D1P1", day_1.Puzzle1, data)
 }
@@ -103,5 +104,9 @@ func BenchmarkD8P1(b *testing.B) {
 
 func BenchmarkD8P2(b *testing.B) {
 	data := helpers.LoadData("day-8/puzzle_data.txt")
-	benchWrapper(b, "D8P2", day_8.Puzzle2, data)
+	b.Run("D8P2", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			day_8.Puzzle2(data, len(data))
+		}
+	})
 }

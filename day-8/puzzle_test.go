@@ -15,7 +15,7 @@ func TestPuzzle1(t *testing.T) {
 
 func TestPuzzle2(t *testing.T) {
 	data := helpers.LoadData("puzzle_test_data.txt")
-	result := Puzzle2(data)
+	result := Puzzle2(data, len(data))
 	assert.Equal(t, 25272, result)
 }
 
@@ -27,6 +27,6 @@ func TestPuzzle1Real(t *testing.T) {
 
 func TestPuzzle2Real(t *testing.T) {
 	data := helpers.LoadData("puzzle_data.txt")
-	result := Puzzle2(data)
+	result := Puzzle2(data, len(data))
 	assert.Equal(t, 6844224, result)
 }
