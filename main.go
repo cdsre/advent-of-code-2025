@@ -12,6 +12,7 @@ import (
 	"github.com/cdsre/advent-of-code-2025/day-6"
 	"github.com/cdsre/advent-of-code-2025/day-7"
 	"github.com/cdsre/advent-of-code-2025/day-8"
+	"github.com/cdsre/advent-of-code-2025/day-9"
 	"github.com/cdsre/advent-of-code-2025/helpers"
 )
 
@@ -81,5 +82,14 @@ func main() {
 		data := helpers.LoadData("day-8/puzzle_data.txt")
 		result := day_8.Puzzle2(data, len(data))
 		fmt.Printf("%d\n", result)
+	case "D9P1":
+		data := helpers.LoadData("day-9/puzzle_data.txt")
+		result := day_9.Puzzle1(data)
+		fmt.Printf("%d\n", result)
+	case "D9P2":
+		data := helpers.LoadData("day-9/puzzle_data.txt")
+		result := day_9.Puzzle2(data)
+		fmt.Printf("%d\n", result)
 	}
+
 }
