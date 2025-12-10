@@ -32,6 +32,43 @@ func GetCombinationsWithRepeats(n, k int) [][]int {
 	return result
 }
 
+func StreamCombinationsWithRepeats(n, k int, stop <-chan struct{}) <-chan []int {
+	ch := make(chan []int)
+	if n <= 0 || k <= 0 {
+		close(ch)
+		return ch
+	}
+	go func() {
+		defer close(ch)
+		combo := make([]int, n)
+		for {
+			// Emit a copy of the current combo
+			c := make([]int, n)
+			copy(c, combo)
+			select {
+			case <-stop:
+				return
+			case ch <- c:
+			}
+
+			// Increment odometer (last index is least significant digit)
+			i := n - 1
+			for i >= 0 {
+				combo[i]++
+				if combo[i] < k {
+					break
+				}
+				combo[i] = 0
+				i--
+			}
+			if i < 0 {
+				return
+			}
+		}
+	}()
+	return ch
+}
+
 type Machine struct {
 	lightsCode      []bool
 	lights          []bool
@@ -84,19 +121,21 @@ func (m *Machine) EfficentStart(mode string) int {
 	buttonPresses := 1
 	for {
 		//fmt.Printf("Button presses: %d\n", buttonPresses)
-		buttonCombos := GetCombinationsWithRepeats(buttonPresses, len(m.buttons))
-		for _, combo := range buttonCombos {
+		stop := make(chan struct{})
+		defer close(stop)
+		comboCh := StreamCombinationsWithRepeats(buttonPresses, len(m.buttons), stop)
+		for combo := range comboCh {
 			m.Reset()
 			for j := range combo {
 				m.PressButton(combo[j])
 				if mode == "joltages" && m.joltagesExceeded() {
+					// prune this branch (early exit current combo)
 					break
 				}
 			}
 			if m.isActivated(mode) {
 				return buttonPresses
 			}
-
 		}
 		buttonPresses++
 	}
