@@ -95,10 +95,10 @@ func main() {
 		data := helpers.LoadData("day-10/puzzle_data.txt")
 		result := day_10.Puzzle1(data)
 		fmt.Printf("%d\n", result)
-		//case "D10P2":
-		//	data := helpers.LoadData("day-10/puzzle_data.txt")
-		//	result := day_10.Puzzle2(data)
-		//	fmt.Printf("%d\n", result)
+	case "D10P2":
+		data := helpers.LoadData("day-10/puzzle_data.txt")
+		result := day_10.Puzzle2(data)
+		fmt.Printf("%d\n", result)
 	}
 
 }

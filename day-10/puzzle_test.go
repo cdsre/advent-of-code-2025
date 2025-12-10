@@ -18,3 +18,15 @@ func TestPuzzle1Real(t *testing.T) {
 	result := Puzzle1(data)
 	assert.Equal(t, 447, result)
 }
+
+func TestPuzzle2(t *testing.T) {
+	data := helpers.LoadData("puzzle_test_data.txt")
+	result := Puzzle2(data)
+	assert.Equal(t, 33, result)
+}
+
+func TestPuzzle2Real(t *testing.T) {
+	data := helpers.LoadData("puzzle_data.txt")
+	result := Puzzle2(data)
+	assert.Equal(t, 0, result)
+}

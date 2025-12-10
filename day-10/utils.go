@@ -42,12 +42,14 @@ type Machine struct {
 
 func (m *Machine) Reset() {
 	m.lights = make([]bool, len(m.lightsCode))
+	m.JoltagesCounter = make([]int, len(m.joltages))
 }
 
 func (m *Machine) PressButton(i int) {
 	button := m.buttons[i]
 	for _, j := range button {
 		m.lights[j] = !m.lights[j]
+		m.JoltagesCounter[j]++
 	}
 }
 
@@ -81,22 +83,27 @@ func (m *Machine) joltagesExceeded() bool {
 func (m *Machine) EfficentStart(mode string) int {
 	buttonPresses := 1
 	for {
+		//fmt.Printf("Button presses: %d\n", buttonPresses)
 		buttonCombos := GetCombinationsWithRepeats(buttonPresses, len(m.buttons))
 		for _, combo := range buttonCombos {
 			m.Reset()
 			for j := range combo {
 				m.PressButton(combo[j])
+				if mode == "joltages" && m.joltagesExceeded() {
+					break
+				}
 			}
 			if m.isActivated(mode) {
 				return buttonPresses
 			}
+
 		}
 		buttonPresses++
 	}
 }
 
 func newMachine(lightsCode []bool, buttons [][]int, joltages []int) Machine {
-	return Machine{lightsCode, make([]bool, len(lightsCode)), buttons, joltages, make([]int, 0, len(joltages))}
+	return Machine{lightsCode, make([]bool, len(lightsCode)), buttons, joltages, make([]int, len(joltages))}
 }
 
 func parseLights(lightsCode []string) []bool {
