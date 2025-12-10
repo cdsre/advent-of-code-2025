@@ -33,10 +33,11 @@ func GetCombinationsWithRepeats(n, k int) [][]int {
 }
 
 type Machine struct {
-	lightsCode []bool
-	lights     []bool
-	buttons    [][]int
-	joltages   []int
+	lightsCode      []bool
+	lights          []bool
+	buttons         [][]int
+	joltages        []int
+	JoltagesCounter []int
 }
 
 func (m *Machine) Reset() {
@@ -54,7 +55,30 @@ func (m *Machine) LightsMatch() bool {
 	return slices.Equal(m.lightsCode, m.lights)
 }
 
-func (m *Machine) EfficentStart() int {
+func (m *Machine) JoltagesMatch() bool {
+	return slices.Equal(m.joltages, m.JoltagesCounter)
+}
+
+func (m *Machine) isActivated(mode string) bool {
+	switch mode {
+	case "lights":
+		return m.LightsMatch()
+	case "joltages":
+		return m.JoltagesMatch()
+	}
+	return false
+}
+
+func (m *Machine) joltagesExceeded() bool {
+	for i := range m.JoltagesCounter {
+		if m.JoltagesCounter[i] > m.joltages[i] {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Machine) EfficentStart(mode string) int {
 	buttonPresses := 1
 	for {
 		buttonCombos := GetCombinationsWithRepeats(buttonPresses, len(m.buttons))
@@ -63,7 +87,7 @@ func (m *Machine) EfficentStart() int {
 			for j := range combo {
 				m.PressButton(combo[j])
 			}
-			if m.LightsMatch() {
+			if m.isActivated(mode) {
 				return buttonPresses
 			}
 		}
@@ -72,7 +96,7 @@ func (m *Machine) EfficentStart() int {
 }
 
 func newMachine(lightsCode []bool, buttons [][]int, joltages []int) Machine {
-	return Machine{lightsCode, make([]bool, len(lightsCode)), buttons, joltages}
+	return Machine{lightsCode, make([]bool, len(lightsCode)), buttons, joltages, make([]int, 0, len(joltages))}
 }
 
 func parseLights(lightsCode []string) []bool {
