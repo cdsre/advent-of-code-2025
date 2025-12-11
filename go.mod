@@ -3,6 +3,7 @@ module github.com/cdsre/advent-of-code-2025
 go 1.25.0
 
 require (
+	github.com/dominikbraun/graph v0.23.0
 	github.com/mikenye/geom2d v0.0.1
 	github.com/stretchr/testify v1.11.1
 )
